@@ -1,0 +1,37 @@
+Types of drivers:
+
+1)Character Device Driver: RTC, Keyboard, sensors, serial port, etc
+2)Block Device Drivers: Storage, sdmmc, eeprom, flash, harddisk
+3)Network Device Drivers:ethernet, wifi, Bluetooth
+
+	Character Driver accesses data from the device sequentiall. i.e, byte by byte (like a stream of characters)
+not as a chunk of data. 
+
+	Block drivers handles data in chunks rather than bytes, which is why these drivers are used for storage 
+devices. 
+
+Device files are special files, or nodes, which get populated in /dev at boot time. Device files are managed as part of
+VFS or Virtul File Systems. ls -l in the dev driectory will tell you what kind of driver each device is, b = block, c=
+char.
+
+Device Number (major and minor)
+	major denotes the number of the driver, and minor represents the instance. Denoted as major:minor, ex. 4:1. 
+When user level prgrams calls on driver, device needs to be registered. Minor numbers help driver differentiate bewteen
+device files. 
+
+Connection bewteen device file and driver
+1)Create device number
+	*ask kernel to dynamically allocate device number. do this via kernel api. 
+	*Drivers need Creation and Deletion functions. 
+	*Kernel api headers incluse fs.h, cdev.h, device.h, uaccess.h
+2)Create device files
+3)Make a char device registration withthe VSF(CDEV_ADD)
+4)Implement the drivers file operation methods for open, read, write, llseek, etc. 
+
+Dynamically register a range of char devices with: int alloc_chrdev_region(dev_t *dev, unsigned baseminor,
+	unsigned count, const char *name);
+Device number is a combo of major and minor number, represented with dev_t. Macros MINOR(dev_no) and MAJOR(dev_no) 
+extract major and minor numbers. Use MKDEV(int major, int minor) to turn numbers back into dev_t
+
+ 
+
