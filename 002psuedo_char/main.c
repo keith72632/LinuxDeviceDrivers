@@ -12,8 +12,40 @@ dev_t device_number;
 //cdev variable
 struct cdev pcd_cdev;
 
+loff_t pcd_lseek(struct file *filp, loff_t off, int whence)
+{
+	return 0;
+}
+
+ssize_t pcd_read(struct file *filp, char __user *buff, size_t count, loff_t *f_pos)
+{
+	return 0;
+}
+
+ssize_t pcd_write(struct file *filp, const char __user *buff, size_t count, loff_t *f_pos)
+{
+	return 0;
+}
+
+int pcd_open(struct inode *inode, struct file *filp)
+{
+	return 0;
+}
+
+int pcd_release(struct inode *inode, struct file *filp)
+{
+	return 0;
+}
+
 //file operations of the driver
-struct file_operations pcd_fops;
+struct file_operations pcd_fops = {
+	.open = pcd_open,
+	.write = pcd_write,
+	.read = pcd_read,
+	.llseek = pcd_lseek,
+	.release = pcd_release,
+	.owner = THIS_MODULE
+};
 
 static int __init pcd_driver_init(void)
 {
@@ -24,7 +56,6 @@ static int __init pcd_driver_init(void)
 	cdev_init(&pcd_cdev, &pcd_fops);
 	
 	/*3. Register a device (cdev) structure with VFS*/
-	pcd_cdev.owner = THIS_MODULE;
 	cdev_add(&pcd_cdev, device_number, 1);
 	printk("Psuedo device driver registers\n");
 
